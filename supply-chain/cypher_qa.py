@@ -11,7 +11,7 @@ from langchain_core.prompts.prompt import PromptTemplate
 ollama_model_name = os.getenv("OLLAMA_MODEL", "llama3.2")
 model = init_chat_model(ollama_model_name, model_provider="ollama")
 
-# Connect to Neo4j
+# Connect to Neo4j with enhanced schema enabled
 graph = Neo4jGraph(
     url=os.getenv("NEO4J_URI"),
     username=os.getenv("NEO4J_USERNAME"),
@@ -42,7 +42,7 @@ cypher_prompt = PromptTemplate(
     template=cypher_template
 )
 
-# Seperate cypher model
+# Separate cypher model
 cypher_model = init_chat_model(ollama_model_name, model_provider="ollama")
 
 # Create the Cypher QA chain
@@ -56,7 +56,6 @@ cypher_qa = GraphCypherQAChain.from_llm(
 )
 
 # Invoke the chain
-question = "What is the highest user rated movie in the Horror genre?"
+question = "Who is the top supplier to Dyson?"
 response = cypher_qa.invoke({"query": question})
 print(response["result"])
-
