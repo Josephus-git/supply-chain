@@ -27,7 +27,7 @@ class TestEnvironment(unittest.TestCase):
         if TestEnvironment.skip_env_variable_tests:
             self.skipTest("Skipping OpenAI env variable test")
 
-        self.env_variable_exists('OPENAI_API_KEY')
+        self.env_variable_exists('OLLAMA_MODEL')
         TestEnvironment.skip_openai_test = False
 
     def test_neo4j_variables(self):
@@ -40,21 +40,24 @@ class TestEnvironment(unittest.TestCase):
         self.env_variable_exists('NEO4J_DATABASE')
         TestEnvironment.skip_neo4j_test = False
 
-    def test_openai_connection(self):
-        if TestEnvironment.skip_openai_test:
-            self.skipTest("Skipping OpenAI test")
+    def test_ollama_connection(self):
+        if TestEnvironment.skip_ollama_test:
+            self.skipTest("Skipping Ollama test")
 
-        from openai import OpenAI, AuthenticationError
+        from langchain_ollama import ChatOllama
 
-        llm = OpenAI()
+        llm = ChatOllama(model="llama3.2")  # specify your model name
 
         try:
-            models = llm.models.list()
-        except AuthenticationError as e:
-            models = None
+            # Simple invocation to test connection
+            response = llm.invoke("ping")
+        except Exception as e:
+            response = None
+
         self.assertIsNotNone(
-            models,
-            "OpenAI connection failed. Check the OPENAI_API_KEY key in .env file.")
+            response,
+            "Ollama connection failed. Ensure Ollama server is running locally."
+        )
 
     def test_neo4j_connection(self):
 
@@ -95,7 +98,7 @@ def suite():
     suite.addTest(TestEnvironment('test_env_file_exists'))
     suite.addTest(TestEnvironment('test_openai_variables'))
     suite.addTest(TestEnvironment('test_neo4j_variables'))
-    suite.addTest(TestEnvironment('test_openai_connection'))
+    suite.addTest(TestEnvironment('test_ollama_connection'))
     suite.addTest(TestEnvironment('test_neo4j_connection'))
     return suite
 
