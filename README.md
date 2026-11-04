@@ -1,4 +1,4 @@
-# Hull Bootcamp
+# Supply chain
 
 A small Python tutorial project for experimenting with LangChain, LangGraph, Ollama, and Neo4j in a supply-chain question-answering workflow.
 
